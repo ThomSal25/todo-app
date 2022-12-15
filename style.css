@@ -1,3 +1,7 @@
 .is-done {
     text-decoration: line-through;
   }
+
+.out-of-filter{
+    display: none;
+}
