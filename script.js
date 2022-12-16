@@ -2,6 +2,8 @@ const btnElement = document.querySelector("#btn-new-todo");
 const newTodoInputElement = document.querySelector("#new-todo");
 const todoListElement = document.querySelector("#todo-list");
 const formElement = document.querySelector("form");
+let stateArr = [];
+let objectElement;
 
 formElement.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -13,7 +15,8 @@ function addNewTodo() {
   if (newTodoInputElement.value.length >= 5) {
     // checkbox Element erzeugen
     const checkboxElement = document.createElement("input");
-    checkboxElement.type = "checkbox";
+      checkboxElement.type = "checkbox";
+      checkboxElement.id= createId(newTodoInputElement.value)
 
     // li Element erzeugen
     const liElement = document.createElement("li");
@@ -24,11 +27,19 @@ function addNewTodo() {
     // li Element new todo input text zuweisen
     const textNode = document.createTextNode(newTodoInputElement.value);
     liElement.appendChild(textNode);
-    newTodoInputElement.value = "";
+    //   newTodoInputElement.value = "";
 
-    checkboxElement.addEventListener("change", () => {
-      liElement.classList.toggle("is-done");
-    });
+    // state Array anlegen
+    //   console.log(newTodoInputElement.value)
+    objectElement = new Object();
+    objectElement.todo = newTodoInputElement.value;
+    objectElement.done = false;
+    objectElement.id = checkboxElement.id;
+    //   console.log(objectElement)
+    stateArr.push(objectElement);
+    console.log(stateArr);
+
+    checkboxElement.addEventListener("change", changeDoneState);
 
     // li element render / dem ul zuweisen
     todoListElement.appendChild(liElement);
@@ -38,7 +49,7 @@ function addNewTodo() {
     );
   }
   // console.log(allListElements, document.querySelectorAll("ul li"))
-  showLi();
+  showListElement();
 }
 
 // filter function
@@ -91,3 +102,29 @@ deleteDone.addEventListener("click", function () {
     doneTodo.remove();
   });
 });
+
+//state
+// 1. leeres Array erzeugen
+//const stateArr = []
+// 2. todo + status done: true/false in als Object speichern
+// Object { todo: ..., done:...}
+//      const objectElement = new Object
+//      objectElement.todo = textNode
+//      objectElement.done = //true/false
+// 3. Object in Array pushen
+//stateArr = stateArr.push(objectElement)
+// 4. Array in local storage überführen
+// 5. beim Reload state aus local storage zurück in ul implementieren
+
+function createId(text) {
+  return (
+    text.toLowerCase().replaceAll(" ", "") + Math.floor(Math.random() * 100000)
+  );
+}
+
+function changeDoneState(event) {
+  const id = event.target.id
+    let index = stateArr.findIndex((element) => element.id === id);
+    stateArr[index].done = !stateArr[index].done
+    console.log(stateArr[index])
+}
